@@ -1,0 +1,6 @@
+name = "ToE"
+version = "0.1.0"
+defaultTargets = ["ToE"]
+
+[[lean_lib]]
+name = "ToE"

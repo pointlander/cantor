@@ -1,0 +1,19 @@
+# Lake / Lean
+/.lake
+/build
+/lake-packages
+*.olean
+*.ilean
+*.trace
+*.c
+*.o
+*.hash
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*~
+*.swp
