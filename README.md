@@ -50,10 +50,36 @@ Supporting facts live in:
   the split `separate`
 - [`ToE/Cosmology.lean`](ToE/Cosmology.lean) — cosmic time, epochs,
   history
+- [`ToE/Geometry.lean`](ToE/Geometry.lean) — Delone realization of the
+  carrier in the continuum (gap, covering radius, density, \(G\))
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
 dyadic identifications, which do not change the cardinality).
+
+## Geometry of the split
+
+Cardinality says the carrier and the continuum are different infinities.
+It does not say how one sits inside the other. After time, the countable
+carrier is realized as a **Delone set** in GR spacetime
+(`DeloneSplit` / `standardDelone`):
+
+| Datum | Role |
+|---|---|
+| `realize` | injective embedding of QFT modes as events |
+| `gap > 0` | uniform discreteness — a shortest distance between events |
+| `coveringRadius > 0` | relative density — continuum holes are bounded |
+| `density > 0` | points of the carrier per unit continuum volume |
+| `newtonG = gap²` | Newton’s constant in units \(\hbar = c = 1\) |
+
+A dense embedding (like \(\mathbb{Q}\subset\mathbb{R}\)) is a theorem of
+the structure, not an extra axiom: it would force two events inside the
+gap, so \(G\) would vanish. The standard model takes gap, covering
+radius, and density all equal to `1` in lattice units, hence \(G = 1\)
+in those units. The SI value still needs an identification of the
+lattice unit with a metre; quasicrystalline cut-and-project geometry is
+a later refinement that computes density from a window, not a replacement
+for this layer.
 
 ## Experimental predictions
 

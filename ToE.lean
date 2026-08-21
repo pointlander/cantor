@@ -7,6 +7,7 @@ Authors: G
 import ToE.Infinity
 import ToE.Physics
 import ToE.Cosmology
+import ToE.Geometry
 
 /-!
 # A Theory of Everything
@@ -73,5 +74,29 @@ the infinities are not the same. -/
 theorem two_infinities :
     Infinite Nat ∧ Infinite Continuum ∧ ¬ Equinumerous Nat Continuum :=
   ⟨infinite_nat, infinite_continuum, not_equinumerous_nat_continuum⟩
+
+/-- After the split the countable carrier sits in the continuum as a
+Delone set: a positive gap, a covering radius, a positive density, and
+a positive Newton constant \(G \sim (\mathrm{gap})^2\). A dense embedding
+is forbidden. -/
+theorem theory_of_everything_geometry :
+    (separate unifiedAtOrigin).1.Modes = standardDelone.Carrier ∧
+    (separate unifiedAtOrigin).2.Spacetime = standardDelone.Spacetime ∧
+    0 < standardDelone.gap ∧
+    0 < standardDelone.coveringRadius ∧
+    0 < standardDelone.density ∧
+    0 < standardDelone.newtonG ∧
+    Function.Injective standardDelone.realize ∧
+    ¬ Function.Surjective standardDelone.realize ∧
+    ¬ MetricallyDense standardDelone.realize standardDelone.dist :=
+  ⟨origin_split_realized.1,
+   origin_split_realized.2,
+   standardDelone.gap_pos,
+   standardDelone.coveringRadius_pos,
+   standardDelone.density_pos,
+   standardDelone.newtonG_pos,
+   standardDelone.realize_injective,
+   standardDelone.realize_not_surjective,
+   standardDelone.not_metrically_dense⟩
 
 end ToE
