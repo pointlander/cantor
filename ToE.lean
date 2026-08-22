@@ -99,4 +99,19 @@ theorem theory_of_everything_geometry :
    standardDelone.realize_not_surjective,
    standardDelone.not_metrically_dense⟩
 
+/-- A finite-area holographic screen counts carrier bits by the law
+\(A = 4 N G\). Its information is finite, hence not the continuum. -/
+theorem theory_of_everything_holography :
+    standardScreen.area =
+      (4 : Rat) * (standardScreen.bits : Rat) * standardDelone.newtonG ∧
+    0 < standardScreen.area ∧
+    0 < standardScreen.bits ∧
+    0 < standardDelone.newtonG ∧
+    ¬ HasRealInfinity (Fin standardScreen.bits) :=
+  ⟨standardScreen_area_law,
+   standardScreen.area_pos,
+   standardScreen.bits_pos,
+   standardDelone.newtonG_pos,
+   standardScreen_no_continuum⟩
+
 end ToE

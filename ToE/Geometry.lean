@@ -232,6 +232,157 @@ theorem not_metrically_dense : ¬ MetricallyDense D.realize D.dist := by
 
 end DeloneSplit
 
+/-! ## Finite information cannot fill a finite set of holes -/
+
+/-- There is no injection of `{0, …, n}` into `{0, …, n − 1}`. -/
+theorem no_inj_upto {n : Nat} (a : Nat → Nat)
+    (hbound : ∀ i, i ≤ n → a i < n)
+    (hinj : ∀ i j, i ≤ n → j ≤ n → a i = a j → i = j) : False := by
+  induction n generalizing a with
+  | zero =>
+    exact Nat.not_lt_zero (a 0) (hbound 0 (Nat.le_refl 0))
+  | succ n ih =>
+    cases Classical.em (∃ k, k ≤ n + 1 ∧ a k = n) with
+    | inr hnone =>
+      apply ih a
+      · intro i hi
+        have hlt : a i < n + 1 := hbound i (Nat.le_succ_of_le hi)
+        have hne : a i ≠ n := fun he => hnone ⟨i, Nat.le_succ_of_le hi, he⟩
+        omega
+      · intro i j hi hj hij
+        exact hinj i j (Nat.le_succ_of_le hi) (Nat.le_succ_of_le hj) hij
+    | inl hex =>
+      obtain ⟨k, hk, hkval⟩ := hex
+      let a' : Nat → Nat := fun i => if i < k then a i else a (i + 1)
+      apply ih a'
+      · intro i hi
+        have hi1 : i + 1 ≤ n + 1 := Nat.succ_le_succ hi
+        cases Nat.lt_or_ge i k with
+        | inl hlt =>
+          have hle : i ≤ n + 1 := Nat.le_trans (Nat.le_of_lt hlt) hk
+          have hlt' : a i < n + 1 := hbound i hle
+          have hne : a i ≠ n := by
+            intro he
+            have : i = k := hinj i k hle hk (he.trans hkval.symm)
+            subst this
+            exact Nat.lt_irrefl _ hlt
+          have : a' i = a i := if_pos hlt
+          omega
+        | inr hge =>
+          have hge' : ¬ i < k := Nat.not_lt.mpr hge
+          have ha' : a' i = a (i + 1) := if_neg hge'
+          have hlt' : a (i + 1) < n + 1 := hbound (i + 1) hi1
+          have hne : a (i + 1) ≠ n := by
+            intro he
+            have : i + 1 = k := hinj (i + 1) k hi1 hk (he.trans hkval.symm)
+            omega
+          omega
+      · intro i j hi hj hij
+        have hi1 : i + 1 ≤ n + 1 := Nat.succ_le_succ hi
+        have hj1 : j + 1 ≤ n + 1 := Nat.succ_le_succ hj
+        cases Nat.lt_or_ge i k with
+        | inl hi_lt =>
+          have hai : a' i = a i := if_pos hi_lt
+          cases Nat.lt_or_ge j k with
+          | inl hj_lt =>
+            have haj : a' j = a j := if_pos hj_lt
+            have : a i = a j := by
+              rw [hai, haj] at hij
+              exact hij
+            exact hinj i j
+              (Nat.le_trans (Nat.le_of_lt hi_lt) hk)
+              (Nat.le_trans (Nat.le_of_lt hj_lt) hk) this
+          | inr hj_ge =>
+            have haj : a' j = a (j + 1) := if_neg (Nat.not_lt.mpr hj_ge)
+            have : a i = a (j + 1) := by
+              rw [hai, haj] at hij
+              exact hij
+            have heq : i = j + 1 := hinj i (j + 1)
+              (Nat.le_trans (Nat.le_of_lt hi_lt) hk) hj1 this
+            omega
+        | inr hi_ge =>
+          have hai : a' i = a (i + 1) := if_neg (Nat.not_lt.mpr hi_ge)
+          cases Nat.lt_or_ge j k with
+          | inl hj_lt =>
+            have haj : a' j = a j := if_pos hj_lt
+            have : a (i + 1) = a j := by
+              rw [hai, haj] at hij
+              exact hij
+            have heq : i + 1 = j := hinj (i + 1) j hi1
+              (Nat.le_trans (Nat.le_of_lt hj_lt) hk) this
+            omega
+          | inr hj_ge =>
+            have haj : a' j = a (j + 1) := if_neg (Nat.not_lt.mpr hj_ge)
+            have : a (i + 1) = a (j + 1) := by
+              rw [hai, haj] at hij
+              exact hij
+            have heq : i + 1 = j + 1 := hinj (i + 1) (j + 1) hi1 hj1 this
+            omega
+
+theorem not_injective_nat_fin {n : Nat} (f : Nat → Fin n)
+    (hf : Function.Injective f) : False := by
+  cases n with
+  | zero => nomatch f 0
+  | succ n =>
+    exact no_inj_upto (n := n + 1) (fun i => (f i).val)
+      (fun i _ => (f i).isLt)
+      (fun i j _ _ h => hf (Fin.ext h))
+
+/-! ## Holographic screens -/
+
+theorem rat_four_pos : 0 < (4 : Rat) :=
+  Rat.natCast_pos.mpr (by decide)
+
+/-- A finite-area 2-surface in the continuum whose independent information
+is a finite number of carrier bits. In units \(\hbar = c = k_B = 1\) the
+Bekenstein–Hawking law is \(A = 4 N G\). -/
+structure HolographicScreen (D : DeloneSplit) where
+  area : Rat
+  area_pos : 0 < area
+  /-- Number of accessible bits of the countable carrier. -/
+  bits : Nat
+  bits_pos : 0 < bits
+  /-- Area law: `area = 4 * bits * G`. -/
+  area_law : (bits : Rat) * 4 * D.newtonG = area
+
+namespace HolographicScreen
+
+variable {D : DeloneSplit} (S : HolographicScreen D)
+
+theorem bits_ne_zero : S.bits ≠ 0 :=
+  Nat.ne_of_gt S.bits_pos
+
+theorem bits_pos_rat : 0 < (S.bits : Rat) :=
+  Rat.natCast_pos.mpr S.bits_pos
+
+/-- Restatement of the area law as \(A = 4 N G\). -/
+theorem area_eq_four_mul_bits_mul_G :
+    S.area = (4 : Rat) * (S.bits : Rat) * D.newtonG := by
+  rw [← S.area_law, Rat.mul_comm (S.bits : Rat) (4 : Rat)]
+
+/-- The area is four Planck areas per carrier bit. -/
+theorem area_eq_four_bits_gap_sq :
+    S.area = (4 : Rat) * (S.bits : Rat) * (D.gap * D.gap) := by
+  rw [S.area_eq_four_mul_bits_mul_G, DeloneSplit.newtonG]
+
+/-- Screen information injects into the countable numbers. -/
+theorem information_injects_into_nat :
+    ∃ f : Fin S.bits → Nat, Function.Injective f :=
+  ⟨fun i => i.val, fun _ _ h => Fin.ext h⟩
+
+/-- A finite-area screen cannot carry the infinity of the reals. -/
+theorem no_real_infinity_on_screen : ¬ HasRealInfinity (Fin S.bits) := by
+  intro h
+  obtain ⟨_to, g, _, hfg⟩ := h
+  have hg : Function.Injective g := by
+    intro y₁ y₂ hy
+    have := congrArg _to hy
+    simpa [hfg] using this
+  exact not_injective_nat_fin (g ∘ embedNat) fun i j hij =>
+    embedNat_injective (hg hij)
+
+end HolographicScreen
+
 /-! ## Least-true index on the Cantor space -/
 
 /-- The least `m ≤ n` at which `P` holds, if any. -/
@@ -460,6 +611,27 @@ theorem standardDelone_G_pos : 0 < standardDelone.newtonG :=
 theorem standardDelone_not_dense :
     ¬ MetricallyDense standardDelone.realize standardDelone.dist :=
   standardDelone.not_metrically_dense
+
+/-- One Planck cell of the standard realization: area `4` in lattice
+units, one carrier bit, \(G = 1\), so \(A = 4 N G\). -/
+noncomputable def standardScreen : HolographicScreen standardDelone where
+  area := 4
+  area_pos := rat_four_pos
+  bits := 1
+  bits_pos := Nat.succ_pos 0
+  area_law := by
+    change (1 : Rat) * 4 * (standardDelone.gap * standardDelone.gap) = 4
+    change (1 : Rat) * 4 * (1 * 1) = 4
+    rw [Rat.one_mul, Rat.one_mul, Rat.mul_one]
+
+theorem standardScreen_area_law :
+    standardScreen.area =
+      (4 : Rat) * (standardScreen.bits : Rat) * standardDelone.newtonG :=
+  standardScreen.area_eq_four_mul_bits_mul_G
+
+theorem standardScreen_no_continuum :
+    ¬ HasRealInfinity (Fin standardScreen.bits) :=
+  standardScreen.no_real_infinity_on_screen
 
 end
 

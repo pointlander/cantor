@@ -51,7 +51,8 @@ Supporting facts live in:
 - [`ToE/Cosmology.lean`](ToE/Cosmology.lean) — cosmic time, epochs,
   history
 - [`ToE/Geometry.lean`](ToE/Geometry.lean) — Delone realization of the
-  carrier in the continuum (gap, covering radius, density, \(G\))
+  carrier in the continuum (gap, covering radius, density, \(G\)) and
+  holographic screens with \(A = 4NG\)
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -80,6 +81,25 @@ in those units. The SI value still needs an identification of the
 lattice unit with a metre; quasicrystalline cut-and-project geometry is
 a later refinement that computes density from a window, not a replacement
 for this layer.
+
+## Holographic screens
+
+Delone geometry makes \(G\) a conversion. A **holographic screen**
+(`HolographicScreen` / `standardScreen`) is where that conversion counts:
+
+\[
+A = 4 N G
+\]
+
+in units \(\hbar = c = k_B = 1\). \(A\) is a finite continuum area; \(N\)
+is a finite number of bits of the original countable carrier. The
+information on the screen therefore injects into \(\mathbb{N}\) and cannot
+carry the infinity of the reals — a finite-area horizon cannot hide a
+continuum of independent quantum data.
+
+On the standard realization, \(G = 1\) and a cell of area \(4\) holds
+exactly one bit. The SI value of \(G\) still needs a metre; the area law
+is already a theorem in lattice units.
 
 ## Experimental predictions
 
