@@ -383,6 +383,107 @@ theorem no_real_infinity_on_screen : ¬ HasRealInfinity (Fin S.bits) := by
 
 end HolographicScreen
 
+/-! ## Causal order and realized screens -/
+
+/-- After the split the countable carrier is a causal set: a strict
+partial order with finite open intervals. Time stays countable; a
+continuum of interpolating events is forbidden. -/
+structure CausalSplit (D : DeloneSplit) where
+  Rel : D.Carrier → D.Carrier → Prop
+  irrefl : ∀ x, ¬ Rel x x
+  trans : ∀ {x y z}, Rel x y → Rel y z → Rel x z
+  /-- Strictly between two events there is no injective copy of `Nat`. -/
+  interval_finite :
+    ∀ x y, ¬ Infinite { z : D.Carrier // Rel x z ∧ Rel z y }
+
+namespace CausalSplit
+
+variable {D : DeloneSplit} (C : CausalSplit D)
+
+theorem asymm {x y : D.Carrier} (h : C.Rel x y) : ¬ C.Rel y x :=
+  fun hyx => C.irrefl x (C.trans h hyx)
+
+/-- A totally ordered finite tuple of carrier events. -/
+def IsChain {n : Nat} (s : Fin n → D.Carrier) : Prop :=
+  ∀ i j : Fin n, i.val < j.val → C.Rel (s i) (s j)
+
+end CausalSplit
+
+/-- The \(N\) bits of a holographic screen as \(N\) incomparable
+(spacelike) carrier events. -/
+structure RealizedScreen {D : DeloneSplit} (C : CausalSplit D) where
+  screen : HolographicScreen D
+  events : Fin screen.bits → D.Carrier
+  events_injective : Function.Injective events
+  antichain :
+    ∀ i j : Fin screen.bits, i ≠ j →
+      ¬ C.Rel (events i) (events j) ∧ ¬ C.Rel (events j) (events i)
+
+namespace RealizedScreen
+
+variable {D : DeloneSplit} {C : CausalSplit D} (S : RealizedScreen C)
+
+theorem bits_eq_event_count : S.screen.bits = S.screen.bits := rfl
+
+/-- A timelike chain of two or more events cannot be a holographic screen. -/
+theorem not_a_chain (hbits : 1 < S.screen.bits) : ¬ C.IsChain S.events := by
+  intro hc
+  let i0 : Fin S.screen.bits := ⟨0, S.screen.bits_pos⟩
+  let i1 : Fin S.screen.bits := ⟨1, hbits⟩
+  have hne : i0 ≠ i1 := by
+    intro h
+    have := congrArg Fin.val h
+    simp at this
+  have hlt : i0.val < i1.val := Nat.zero_lt_one
+  have hrel : C.Rel (S.events i0) (S.events i1) := hc i0 i1 hlt
+  exact (S.antichain i0 i1 hne).1 hrel
+
+theorem area_law :
+    S.screen.area =
+      (4 : Rat) * (S.screen.bits : Rat) * D.newtonG :=
+  S.screen.area_eq_four_mul_bits_mul_G
+
+end RealizedScreen
+
+/-- Causal precedence on the standard carrier `Nat`: `a` can influence
+`b` only if `a + 2 ≤ b`. Immediate neighbours are spacelike, so a
+two-event screen exists. -/
+def standardRel (a b : Nat) : Prop := a + 2 ≤ b
+
+theorem standardRel_irrefl (x : Nat) : ¬ standardRel x x := by
+  intro h
+  simp [standardRel] at h
+  omega
+
+theorem standardRel_trans {x y z : Nat}
+    (hxy : standardRel x y) (hyz : standardRel y z) : standardRel x z := by
+  simp [standardRel] at hxy hyz ⊢
+  omega
+
+theorem standardRel_interval_finite (x y : Nat) :
+    ¬ Infinite { z : Nat // standardRel x z ∧ standardRel z y } := by
+  intro ⟨f, hf⟩
+  have hz := (f 0).2
+  have hspan : x + 4 ≤ y := by
+    simp [standardRel] at hz
+    omega
+  let n := y - x - 3
+  have hnpos : 0 < n := by omega
+  let g : Nat → Fin n := fun k =>
+    ⟨(f k).val - (x + 2), by
+      have hk := (f k).2
+      simp [standardRel] at hk
+      omega⟩
+  refine not_injective_nat_fin g fun i j hij => ?_
+  have hidx : (g i).val = (g j).val := congrArg Fin.val hij
+  have hi := (f i).2
+  have hj := (f j).2
+  simp [standardRel] at hi hj
+  have : (f i).val = (f j).val := by
+    dsimp [g] at hidx
+    omega
+  exact hf (Subtype.ext this)
+
 /-! ## Least-true index on the Cantor space -/
 
 /-- The least `m ≤ n` at which `P` holds, if any. -/
@@ -632,6 +733,64 @@ theorem standardScreen_area_law :
 theorem standardScreen_no_continuum :
     ¬ HasRealInfinity (Fin standardScreen.bits) :=
   standardScreen.no_real_infinity_on_screen
+
+/-- The standard carrier as a causal set. Neighbours are spacelike. -/
+noncomputable def standardCausal : CausalSplit standardDelone where
+  Rel := standardRel
+  irrefl := standardRel_irrefl
+  trans := standardRel_trans
+  interval_finite := standardRel_interval_finite
+
+/-- The one-bit Planck cell as a single carrier event (a trivial antichain). -/
+noncomputable def standardRealizedScreen : RealizedScreen standardCausal where
+  screen := standardScreen
+  events := fun _ => (0 : Nat)
+  events_injective := by
+    intro i j _
+    have hi : i.val = 0 := Nat.lt_one_iff.mp i.isLt
+    have hj : j.val = 0 := Nat.lt_one_iff.mp j.isLt
+    exact Fin.ext (hi.trans hj.symm)
+  antichain := by
+    intro i j hne
+    have hi : i.val = 0 := Nat.lt_one_iff.mp i.isLt
+    have hj : j.val = 0 := Nat.lt_one_iff.mp j.isLt
+    exact (hne (Fin.ext (hi.trans hj.symm))).elim
+
+/-- Two spacelike neighbours `{0, 1}` as a two-bit screen of area `8`. -/
+noncomputable def pairScreen : HolographicScreen standardDelone where
+  area := 8
+  area_pos := Rat.natCast_pos.mpr (by decide)
+  bits := 2
+  bits_pos := by decide
+  area_law := by
+    change ((2 : Nat) : Rat) * 4 * (standardDelone.gap * standardDelone.gap) = 8
+    change ((2 : Nat) : Rat) * 4 * (1 * 1) = 8
+    rw [Rat.one_mul, Rat.mul_one]
+    have h4 : (4 : Rat) = ((4 : Nat) : Rat) := rfl
+    have h8 : (8 : Rat) = ((8 : Nat) : Rat) := rfl
+    rw [h4, h8, ← Rat.natCast_mul]
+
+noncomputable def pairRealizedScreen : RealizedScreen standardCausal where
+  screen := pairScreen
+  events := fun i => i.val
+  events_injective := fun i j h => Fin.ext h
+  antichain := by
+    intro i j hne
+    constructor
+    · intro hrel
+      simp [standardCausal, standardRel] at hrel
+      have hi : i.val < 2 := i.isLt
+      have hj : j.val < 2 := j.isLt
+      omega
+    · intro hrel
+      simp [standardCausal, standardRel] at hrel
+      have hi : i.val < 2 := i.isLt
+      have hj : j.val < 2 := j.isLt
+      omega
+
+theorem pairRealizedScreen_not_a_chain :
+    ¬ standardCausal.IsChain pairRealizedScreen.events :=
+  pairRealizedScreen.not_a_chain (by decide)
 
 end
 

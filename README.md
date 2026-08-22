@@ -50,9 +50,9 @@ Supporting facts live in:
   the split `separate`
 - [`ToE/Cosmology.lean`](ToE/Cosmology.lean) — cosmic time, epochs,
   history
-- [`ToE/Geometry.lean`](ToE/Geometry.lean) — Delone realization of the
-  carrier in the continuum (gap, covering radius, density, \(G\)) and
-  holographic screens with \(A = 4NG\)
+- [`ToE/Geometry.lean`](ToE/Geometry.lean) — Delone realization, holographic
+  screens with \(A = 4NG\), and a locally finite causal order whose
+  screens are finite antichains
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -100,6 +100,22 @@ continuum of independent quantum data.
 On the standard realization, \(G = 1\) and a cell of area \(4\) holds
 exactly one bit. The SI value of \(G\) still needs a metre; the area law
 is already a theorem in lattice units.
+
+## Causal order
+
+The countable carrier is a causal set (`CausalSplit` /
+`standardCausal`): a strict partial order with **finite open intervals**.
+There is no injective copy of \(\mathbb{N}\) between two events, so the
+time direction does not smuggle in a continuum of independent instants.
+
+A **realized screen** (`RealizedScreen`) is a holographic screen whose
+\(N\) bits are \(N\) pairwise incomparable carrier events — an antichain,
+hence spacelike. A timelike chain of two or more events cannot be a
+screen.
+
+On the standard carrier `Nat`, \(a\) precedes \(b\) when \(a+2\le b\), so
+immediate neighbours are spacelike. The one-bit cell is the event `0`.
+The two-bit screen `{0,1}` has area `8` and is not a chain.
 
 ## Experimental predictions
 

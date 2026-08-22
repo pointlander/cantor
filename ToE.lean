@@ -114,4 +114,26 @@ theorem theory_of_everything_holography :
    standardDelone.newtonG_pos,
    standardScreen_no_continuum⟩
 
+/-- The carrier carries a locally finite causal order. A holographic
+screen is \(N\) incomparable events: the one-bit cell is a single event,
+and two spacelike neighbours form a two-bit screen, which is not a chain. -/
+theorem theory_of_everything_causal :
+    (∀ x, ¬ standardCausal.Rel x x) ∧
+    (∀ x y, ¬ Infinite
+      { z // standardCausal.Rel x z ∧ standardCausal.Rel z y }) ∧
+    Function.Injective standardRealizedScreen.events ∧
+    standardRealizedScreen.screen.bits = 1 ∧
+    pairRealizedScreen.screen.bits = 2 ∧
+    pairRealizedScreen.screen.area =
+      (4 : Rat) * (pairRealizedScreen.screen.bits : Rat) *
+        standardDelone.newtonG ∧
+    ¬ standardCausal.IsChain pairRealizedScreen.events :=
+  ⟨standardCausal.irrefl,
+   standardCausal.interval_finite,
+   standardRealizedScreen.events_injective,
+   rfl,
+   rfl,
+   pairRealizedScreen.area_law,
+   pairRealizedScreen_not_a_chain⟩
+
 end ToE
