@@ -136,4 +136,26 @@ theorem theory_of_everything_causal :
    pairRealizedScreen.area_law,
    pairRealizedScreen_not_a_chain⟩
 
+/-- A finite causal diamond splits across a maximal screen into past,
+the screen, and future. The three classes are exclusive; past and future
+are nonempty in the standard example; none of them carries the continuum. -/
+theorem theory_of_everything_horizon :
+    (∀ i, standardDiamond.mem (midRealizedScreen.events i)) ∧
+    InPast midRealizedScreen standardDiamond (0 : Nat) ∧
+    RealizedScreen.OnScreen midRealizedScreen (2 : Nat) ∧
+    InFuture midRealizedScreen standardDiamond (4 : Nat) ∧
+    ¬ (InPast midRealizedScreen standardDiamond (0 : Nat) ∧
+        InFuture midRealizedScreen standardDiamond (0 : Nat)) ∧
+    midRealizedScreen.screen.area =
+      (4 : Rat) * (midRealizedScreen.screen.bits : Rat) *
+        standardDelone.newtonG ∧
+    ¬ HasRealInfinity (Fin standardDiamond.size) :=
+  ⟨standardHorizon.screen_in_diamond,
+   standardHorizon_has_past,
+   ⟨⟨0, by decide⟩, rfl⟩,
+   standardHorizon_has_future,
+   standardHorizon_past_not_future,
+   midRealizedScreen.area_law,
+   standardDiamond.not_real_infinity⟩
+
 end ToE

@@ -443,7 +443,152 @@ theorem area_law :
       (4 : Rat) * (S.screen.bits : Rat) * D.newtonG :=
   S.screen.area_eq_four_mul_bits_mul_G
 
+/-- Event `x` lies on the realized screen. -/
+def OnScreen (x : D.Carrier) : Prop :=
+  ∃ i, S.events i = x
+
 end RealizedScreen
+
+/-- A finite region of the causal set: injectively labelled by `Fin size`. -/
+structure CausalDiamond {D : DeloneSplit} (C : CausalSplit D) where
+  size : Nat
+  size_pos : 0 < size
+  points : Fin size → D.Carrier
+  points_injective : Function.Injective points
+
+namespace CausalDiamond
+
+variable {D : DeloneSplit} {C : CausalSplit D} (Δ : CausalDiamond C)
+
+/-- Membership in the diamond. -/
+def mem (x : D.Carrier) : Prop :=
+  ∃ i, Δ.points i = x
+
+theorem mem_points (i : Fin Δ.size) : Δ.mem (Δ.points i) :=
+  ⟨i, rfl⟩
+
+/-- A finite diamond cannot carry the infinity of the reals. -/
+theorem not_real_infinity : ¬ HasRealInfinity (Fin Δ.size) := by
+  intro h
+  obtain ⟨toFun, g, _, hfg⟩ := h
+  have hg : Function.Injective g := by
+    intro y₁ y₂ hy
+    have := congrArg toFun hy
+    simpa [hfg] using this
+  exact not_injective_nat_fin (g ∘ embedNat) fun i j hij =>
+    embedNat_injective (hg hij)
+
+end CausalDiamond
+
+/-- Past of a screen: in the diamond, strictly precedes some screen event,
+and not itself on the screen. -/
+def InPast {D : DeloneSplit} {C : CausalSplit D}
+    (S : RealizedScreen C) (Δ : CausalDiamond C) (x : D.Carrier) : Prop :=
+  Δ.mem x ∧ (∃ i, C.Rel x (S.events i)) ∧ ¬ S.OnScreen x
+
+/-- Future of a screen: in the diamond, strictly follows some screen event,
+and not itself on the screen. -/
+def InFuture {D : DeloneSplit} {C : CausalSplit D}
+    (S : RealizedScreen C) (Δ : CausalDiamond C) (x : D.Carrier) : Prop :=
+  Δ.mem x ∧ (∃ i, C.Rel (S.events i) x) ∧ ¬ S.OnScreen x
+
+/-- A holographic screen that is maximal in a finite causal diamond:
+every diamond event is on the screen, in its past, or in its future. -/
+structure Horizon {D : DeloneSplit} {C : CausalSplit D}
+    (S : RealizedScreen C) (Δ : CausalDiamond C) where
+  screen_in_diamond : ∀ i, Δ.mem (S.events i)
+  maximal :
+    ∀ j : Fin Δ.size,
+      S.OnScreen (Δ.points j) ∨
+      (∃ i, C.Rel (Δ.points j) (S.events i)) ∨
+      (∃ i, C.Rel (S.events i) (Δ.points j))
+
+namespace Horizon
+
+variable {D : DeloneSplit} {C : CausalSplit D}
+  {S : RealizedScreen C} {Δ : CausalDiamond C}
+
+theorem onScreen_not_past {x : D.Carrier}
+    (hon : S.OnScreen x) (hp : ∃ i, C.Rel x (S.events i)) : False := by
+  obtain ⟨j, hj⟩ := hon
+  obtain ⟨i, hi⟩ := hp
+  subst hj
+  cases Classical.em (i = j) with
+  | inl heq =>
+    subst heq
+    exact C.irrefl _ hi
+  | inr hne =>
+    exact (S.antichain i j hne).2 hi
+
+theorem onScreen_not_future {x : D.Carrier}
+    (hon : S.OnScreen x) (hf : ∃ i, C.Rel (S.events i) x) : False := by
+  obtain ⟨j, hj⟩ := hon
+  obtain ⟨i, hi⟩ := hf
+  subst hj
+  cases Classical.em (i = j) with
+  | inl heq =>
+    subst heq
+    exact C.irrefl _ hi
+  | inr hne =>
+    exact (S.antichain i j hne).1 hi
+
+theorem past_not_future {x : D.Carrier}
+    (hp : ∃ i, C.Rel x (S.events i))
+    (hf : ∃ k, C.Rel (S.events k) x) : False := by
+  obtain ⟨i, hi⟩ := hp
+  obtain ⟨k, hk⟩ := hf
+  have hki : C.Rel (S.events k) (S.events i) := C.trans hk hi
+  cases Classical.em (k = i) with
+  | inl heq =>
+    subst heq
+    exact C.irrefl _ hki
+  | inr hne =>
+    exact (S.antichain k i hne).1 hki
+
+/-- Every diamond event is on the screen, in the past, or in the future,
+and the three classes are exclusive. -/
+theorem classified (H : Horizon S Δ) (j : Fin Δ.size) :
+    S.OnScreen (Δ.points j) ∨
+      InPast S Δ (Δ.points j) ∨
+      InFuture S Δ (Δ.points j) := by
+  have hmem : Δ.mem (Δ.points j) := Δ.mem_points j
+  cases H.maximal j with
+  | inl hon => exact .inl hon
+  | inr hrest =>
+    cases hrest with
+    | inl hp =>
+      cases Classical.em (S.OnScreen (Δ.points j)) with
+      | inl hon => exact .inl hon
+      | inr hnot => exact .inr (.inl ⟨hmem, hp, hnot⟩)
+    | inr hf =>
+      cases Classical.em (S.OnScreen (Δ.points j)) with
+      | inl hon => exact .inl hon
+      | inr hnot => exact .inr (.inr ⟨hmem, hf, hnot⟩)
+
+theorem inPast_not_onScreen {x : D.Carrier} (h : InPast S Δ x) : ¬ S.OnScreen x :=
+  h.2.2
+
+theorem inFuture_not_onScreen {x : D.Carrier} (h : InFuture S Δ x) : ¬ S.OnScreen x :=
+  h.2.2
+
+theorem inPast_not_inFuture {x : D.Carrier}
+    (hp : InPast S Δ x) (hf : InFuture S Δ x) : False :=
+  past_not_future hp.2.1 hf.2.1
+
+/-- Past information of a finite diamond cannot carry the continuum. -/
+theorem past_not_real_infinity : ¬ HasRealInfinity (Fin Δ.size) :=
+  Δ.not_real_infinity
+
+/-- Future information of a finite diamond cannot carry the continuum. -/
+theorem future_not_real_infinity : ¬ HasRealInfinity (Fin Δ.size) :=
+  Δ.not_real_infinity
+
+theorem area_law :
+    S.screen.area =
+      (4 : Rat) * (S.screen.bits : Rat) * D.newtonG :=
+  S.area_law
+
+end Horizon
 
 /-- Causal precedence on the standard carrier `Nat`: `a` can influence
 `b` only if `a + 2 ≤ b`. Immediate neighbours are spacelike, so a
@@ -791,6 +936,91 @@ noncomputable def pairRealizedScreen : RealizedScreen standardCausal where
 theorem pairRealizedScreen_not_a_chain :
     ¬ standardCausal.IsChain pairRealizedScreen.events :=
   pairRealizedScreen.not_a_chain (by decide)
+
+/-- Finite causal diamond on events `0, …, 6`. -/
+noncomputable def standardDiamond : CausalDiamond standardCausal where
+  size := 7
+  size_pos := by decide
+  points := fun i => i.val
+  points_injective := fun i j h => Fin.ext h
+
+/-- Mid-slice screen `{2, 3}`: two spacelike events inside the diamond. -/
+noncomputable def midRealizedScreen : RealizedScreen standardCausal where
+  screen := pairScreen
+  events := fun i => i.val + 2
+  events_injective := by
+    intro i j h
+    have : i.val + 2 = j.val + 2 := h
+    exact Fin.ext (by omega)
+  antichain := by
+    intro i j hne
+    have hbits : pairScreen.bits = 2 := rfl
+    have hi : i.val < 2 := Nat.lt_of_lt_of_eq i.isLt hbits
+    have hj : j.val < 2 := Nat.lt_of_lt_of_eq j.isLt hbits
+    constructor
+    · intro hrel
+      simp [standardCausal, standardRel] at hrel
+      omega
+    · intro hrel
+      simp [standardCausal, standardRel] at hrel
+      omega
+
+/-- `{2, 3}` is a horizon in the diamond `0..6`: past `{0,1}`, screen
+`{2,3}`, future `{4,5,6}`. -/
+theorem standardHorizon : Horizon midRealizedScreen standardDiamond where
+  screen_in_diamond := by
+    intro i
+    have hbits : pairScreen.bits = 2 := rfl
+    have hsz : standardDiamond.size = 7 := rfl
+    have hi : i.val < 2 := Nat.lt_of_lt_of_eq i.isLt hbits
+    refine ⟨⟨i.val + 2, by omega⟩, rfl⟩
+  maximal := by
+    intro j
+    have hbits : midRealizedScreen.screen.bits = 2 := rfl
+    have hsz : standardDiamond.size = 7 := rfl
+    have hj : j.val < 7 := Nat.lt_of_lt_of_eq j.isLt hsz
+    cases Nat.lt_or_ge j.val 2 with
+    | inl hlt =>
+      refine .inr (.inl ⟨⟨1, by decide⟩, ?_⟩)
+      change standardRel (standardDiamond.points j) (midRealizedScreen.events ⟨1, by decide⟩)
+      simp [standardDiamond, midRealizedScreen, standardRel]
+      omega
+    | inr hge =>
+      cases Nat.lt_or_ge j.val 4 with
+      | inl hmid =>
+        refine .inl ⟨⟨j.val - 2, by omega⟩, ?_⟩
+        change (j.val - 2 + 2 : Nat) = j.val
+        exact Nat.sub_add_cancel hge
+      | inr hfut =>
+        refine .inr (.inr ⟨⟨0, by decide⟩, ?_⟩)
+        change standardRel (midRealizedScreen.events ⟨0, by decide⟩)
+          (standardDiamond.points j)
+        simp [standardDiamond, midRealizedScreen, standardRel]
+        omega
+
+theorem standardHorizon_has_past : InPast midRealizedScreen standardDiamond (0 : Nat) := by
+  refine ⟨⟨⟨0, by decide⟩, rfl⟩, ⟨⟨0, by decide⟩, ?_⟩, ?_⟩
+  · simp [midRealizedScreen, standardCausal, standardRel]
+  · intro ⟨i, hi⟩
+    have hbits : midRealizedScreen.screen.bits = 2 := rfl
+    have hi' : i.val < 2 := Nat.lt_of_lt_of_eq i.isLt hbits
+    have : i.val + 2 = (0 : Nat) := hi
+    omega
+
+theorem standardHorizon_has_future : InFuture midRealizedScreen standardDiamond (4 : Nat) := by
+  refine ⟨⟨⟨4, by decide⟩, rfl⟩, ⟨⟨0, by decide⟩, ?_⟩, ?_⟩
+  · simp [midRealizedScreen, standardCausal, standardRel]
+  · intro ⟨i, hi⟩
+    have hbits : midRealizedScreen.screen.bits = 2 := rfl
+    have hi' : i.val < 2 := Nat.lt_of_lt_of_eq i.isLt hbits
+    have : i.val + 2 = (4 : Nat) := hi
+    omega
+
+theorem standardHorizon_past_not_future :
+    ¬ (InPast midRealizedScreen standardDiamond (0 : Nat) ∧
+        InFuture midRealizedScreen standardDiamond (0 : Nat)) := by
+  intro h
+  exact Horizon.past_not_future h.1.2.1 h.2.2.1
 
 end
 

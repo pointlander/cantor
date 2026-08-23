@@ -51,8 +51,8 @@ Supporting facts live in:
 - [`ToE/Cosmology.lean`](ToE/Cosmology.lean) — cosmic time, epochs,
   history
 - [`ToE/Geometry.lean`](ToE/Geometry.lean) — Delone realization, holographic
-  screens with \(A = 4NG\), and a locally finite causal order whose
-  screens are finite antichains
+  screens, causal order, and horizons that split a finite diamond into
+  past, screen, and future
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -116,6 +116,19 @@ screen.
 On the standard carrier `Nat`, \(a\) precedes \(b\) when \(a+2\le b\), so
 immediate neighbours are spacelike. The one-bit cell is the event `0`.
 The two-bit screen `{0,1}` has area `8` and is not a chain.
+
+## Horizons
+
+A **causal diamond** (`CausalDiamond`) is a finite region of the carrier.
+A **horizon** (`Horizon` / `standardHorizon`) is a realized screen that is
+**maximal in that diamond**: every diamond event is on the screen, in its
+past, or in its future. The three classes are exclusive. Past and future
+are subsets of a finite set, so neither can carry the infinity of the
+reals — the interior cannot hide a continuum of independent information.
+
+On the standard diamond `{0,…,6}`, the mid-slice `{2,3}` is a two-bit
+horizon: past `{0,1}`, screen `{2,3}`, future `{4,5,6}`, still with
+\(A = 8 = 4\cdot 2\cdot G\).
 
 ## Experimental predictions
 
