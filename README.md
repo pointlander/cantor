@@ -53,6 +53,8 @@ Supporting facts live in:
 - [`ToE/Geometry.lean`](ToE/Geometry.lean) — Delone realization, holographic
   screens, causal order, and horizons that split a finite diamond into
   past, screen, and future
+- [`ToE/Information.lean`](ToE/Information.lean) — black holes, Bekenstein–Hawking
+  entropy, the Page curve, and the impossibility of a continuum remnant
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -129,6 +131,31 @@ reals — the interior cannot hide a continuum of independent information.
 On the standard diamond `{0,…,6}`, the mid-slice `{2,3}` is a two-bit
 horizon: past `{0,1}`, screen `{2,3}`, future `{4,5,6}`, still with
 \(A = 8 = 4\cdot 2\cdot G\).
+
+## Black holes and information
+
+A **black hole** (`BlackHole` / `standardBlackHole`) is a horizon in a
+finite diamond. Its Bekenstein–Hawking entropy is the bit count of the
+screen:
+
+\[
+S = N = A / (4G)
+\]
+
+in units \(\hbar = c = k_B = 1\). The interior is the past of that
+screen. Interior, screen, Hawking radiation, and any remnant are finite
+packets of the countable carrier, so none of them can carry the infinity
+of the reals — the geometric interior is not a second, independent set of
+degrees of freedom.
+
+**Hawking evaporation** (`PageCurve` / `standardPage`) is a partition of
+those \(N\) bits into remaining hole bits and radiation bits, not a
+dynamical law. The sum is conserved. On the standard two-bit hole the
+stages are remaining `{2,3}` with no radiation, then `{3}` with radiation
+`{4}`, then no hole and radiation `{4,5}`. Remaining area drops
+\(8\to 4\to 0\) while radiation area rises \(0\to 4\to 8\). Information
+returns because it was countable and the diamond is finite. A remnant
+that stores a continuum of independent information is impossible.
 
 ## Experimental predictions
 

@@ -8,6 +8,7 @@ import ToE.Infinity
 import ToE.Physics
 import ToE.Cosmology
 import ToE.Geometry
+import ToE.Information
 
 /-!
 # A Theory of Everything
@@ -157,5 +158,35 @@ theorem theory_of_everything_horizon :
    standardHorizon_past_not_future,
    midRealizedScreen.area_law,
    standardDiamond.not_real_infinity⟩
+
+/-- A finite-area black hole has Bekenstein–Hawking entropy equal to
+its bit count. The interior cannot carry the continuum. Evaporation
+conserves that count along the Page curve: the bits start on the hole
+and end in the radiation, with no continuum remnant. -/
+theorem theory_of_everything_information :
+    standardBlackHole.entropy = 2 ∧
+    standardBlackHole.area =
+      (4 : Rat) * (standardBlackHole.entropy : Rat) *
+        standardDelone.newtonG ∧
+    standardBlackHole.Interior (0 : Nat) ∧
+    standardBlackHole.Exterior (4 : Nat) ∧
+    ¬ HasRealInfinity (Fin standardInterior.bits) ∧
+    standardPage.early.pageSum = standardPage.totalBits ∧
+    standardPage.middle.pageSum = standardPage.totalBits ∧
+    standardPage.late.pageSum = standardPage.totalBits ∧
+    standardPage.early.remaining.bits = 2 ∧
+    standardPage.late.remaining.bits = 0 ∧
+    standardPage.late.radiation.bits = 2 ∧
+    ¬ HasRealInfinity (Fin standardPage.late.remaining.bits) :=
+  ⟨rfl,
+   standardBlackHole.area_law,
+   standardBlackHole_has_interior,
+   standardBlackHole_has_exterior,
+   standardInterior_no_real_infinity,
+   standardPage.early_sum,
+   standardPage.middle_sum,
+   standardPage.late_sum,
+   rfl, rfl, rfl,
+   standardPage_no_continuum_remnant⟩
 
 end ToE
