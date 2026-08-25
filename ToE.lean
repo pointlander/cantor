@@ -9,6 +9,7 @@ import ToE.Physics
 import ToE.Cosmology
 import ToE.Geometry
 import ToE.Information
+import ToE.Dimension
 
 /-!
 # A Theory of Everything
@@ -188,5 +189,28 @@ theorem theory_of_everything_information :
    standardPage.late_sum,
    rfl, rfl, rfl,
    standardPage_no_continuum_remnant⟩
+
+/-- Spacetime is four copies of the continuum, which is still the
+infinity of the reals. Extra axes do not undo the split. Packing
+identifies bulk density with holographic \(G\); on the standard
+realization it is \(1\) in lattice units. -/
+theorem theory_of_everything_dimension :
+    spacetimeDimension = 4 ∧
+    Equinumerous Spacetime4 Continuum ∧
+    HasRealInfinity Spacetime4 ∧
+    ¬ Equinumerous standardDelone.Carrier Spacetime4 ∧
+    standardFour.dimension = 4 ∧
+    0 < standardDelone.packing ∧
+    standardDelone.areaPerBit * standardDelone.packing =
+      standardDelone.newtonG ∧
+    standardDelone.packing = (1 : Rat) :=
+  ⟨rfl,
+   spacetime4_equinumerous_continuum,
+   spacetime4_has_real_infinity,
+   countable_ne_spacetime4 standardDelone.countableInfinity,
+   rfl,
+   standardDelone.packing_pos,
+   standardDelone.areaPerBit_mul_packing,
+   standardDelone_packing⟩
 
 end ToE

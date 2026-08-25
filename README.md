@@ -55,6 +55,9 @@ Supporting facts live in:
   past, screen, and future
 - [`ToE/Information.lean`](ToE/Information.lean) — black holes, Bekenstein–Hawking
   entropy, the Page curve, and the impossibility of a continuum remnant
+- [`ToE/Dimension.lean`](ToE/Dimension.lean) — four copies of the continuum with
+  \(\lvert\mathbb{R}^4\rvert = \lvert\mathbb{R}\rvert\), and the packing
+  factor that identifies bulk density with holographic \(G\)
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -74,6 +77,7 @@ carrier is realized as a **Delone set** in GR spacetime
 | `coveringRadius > 0` | relative density — continuum holes are bounded |
 | `density > 0` | points of the carrier per unit continuum volume |
 | `newtonG = gap²` | Newton’s constant in units \(\hbar = c = 1\) |
+| `packing` | converts volume-per-point into Planck area |
 
 A dense embedding (like \(\mathbb{Q}\subset\mathbb{R}\)) is a theorem of
 the structure, not an extra axiom: it would force two events inside the
@@ -83,6 +87,31 @@ in those units. The SI value still needs an identification of the
 lattice unit with a metre; quasicrystalline cut-and-project geometry is
 a later refinement that computes density from a window, not a replacement
 for this layer.
+
+## Four dimensions
+
+Spacetime after the split is four copies of the continuum
+(`Spacetime4` / `standardFour`). That is still the infinity of the reals:
+
+\[
+\lvert\mathbb{R}^4\rvert = \lvert\mathbb{R}\rvert.
+\]
+
+The proof interleaves bits: two copies of `ℕ → Bool` are one copy, and
+four copies follow by iterating. Extra axes do not create a new infinity,
+so QFT and four-dimensional GR still cannot be identified.
+
+The **packing factor** (`packing`) is the conversion from bulk
+volume-per-point (`areaPerBit = density⁻¹`) to Planck area
+(`G = gap²`):
+
+\[
+(\mathrm{area\ per\ bit})\times(\mathrm{packing}) = G.
+\]
+
+On the standard realization, packing is `1` in lattice units, matching
+\(G = 1\). Dimension is `4`; it is a reading of the same continuum, not
+a fifth infinity.
 
 ## Holographic screens
 

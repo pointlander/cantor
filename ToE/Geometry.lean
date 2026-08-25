@@ -181,13 +181,26 @@ def newtonG : Rat := D.gap * D.gap
 theorem newtonG_pos : 0 < D.newtonG :=
   Rat.mul_pos D.gap_pos D.gap_pos
 
-/-- Holographic area per bit from the bulk density. Agrees with `newtonG`
-only after a dimension-dependent packing factor, which is not yet in the
-model. -/
+/-- Holographic area per bit from the bulk density. Related to `newtonG`
+by the packing factor: `areaPerBit * packing = newtonG`. -/
 def areaPerBit : Rat := D.density⁻¹
 
 theorem areaPerBit_pos : 0 < D.areaPerBit :=
   Rat.inv_pos.mpr D.density_pos
+
+/-- Conversion from bulk volume-per-point to Planck area. Defined so
+that `areaPerBit * packing = newtonG`. -/
+def packing : Rat := D.newtonG * D.density
+
+theorem packing_pos : 0 < D.packing :=
+  Rat.mul_pos D.newtonG_pos D.density_pos
+
+theorem areaPerBit_mul_packing :
+    D.areaPerBit * D.packing = D.newtonG := by
+  have hd : D.density ≠ 0 := Rat.ne_of_gt D.density_pos
+  unfold packing areaPerBit
+  rw [Rat.mul_comm D.newtonG, ← Rat.mul_assoc, Rat.mul_comm D.density⁻¹,
+    Rat.mul_inv_cancel _ hd, Rat.one_mul]
 
 /-- A gap forbids a dense embedding: the carrier cannot accumulate at a
 continuum point without two events falling inside the gap. -/
@@ -853,6 +866,17 @@ theorem standardDelone_density_pos : 0 < standardDelone.density :=
 
 theorem standardDelone_G_pos : 0 < standardDelone.newtonG :=
   standardDelone.newtonG_pos
+
+theorem standardDelone_packing :
+    standardDelone.packing = (1 : Rat) := by
+  change (standardDelone.gap * standardDelone.gap) * standardDelone.density = 1
+  change ((1 : Rat) * 1) * 1 = 1
+  rw [Rat.one_mul, Rat.one_mul]
+
+theorem standardDelone_areaPerBit_mul_packing :
+    standardDelone.areaPerBit * standardDelone.packing =
+      standardDelone.newtonG :=
+  standardDelone.areaPerBit_mul_packing
 
 theorem standardDelone_not_dense :
     ¬ MetricallyDense standardDelone.realize standardDelone.dist :=
