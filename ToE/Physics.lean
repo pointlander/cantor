@@ -12,9 +12,9 @@ import ToE.Infinity
 A physical theory, in this formalization, is a kinematic carrier together
 with the infinity that carrier bears.
 
-* **Quantum field theory** is separable: its Fock space admits a countable
-  orthonormal basis of occupation-number states, so it carries the infinity
-  of the countable numbers.
+* **Quantum field theory** is separable: its Fock space (constructed in
+  `ToE.Fock`) admits a countable basis of finite-support occupation-number
+  states, so it carries the infinity of the countable numbers.
 * **General relativity** is a continuum theory: spacetime is locally
   modelled on `ℝ⁴`, and `|ℝ⁴| = |ℝ|`, so it carries the infinity of the
   reals.

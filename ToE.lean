@@ -10,6 +10,7 @@ import ToE.Cosmology
 import ToE.Geometry
 import ToE.Information
 import ToE.Dimension
+import ToE.Fock
 
 /-!
 # A Theory of Everything
@@ -212,5 +213,26 @@ theorem theory_of_everything_dimension :
    standardDelone.packing_pos,
    standardDelone.areaPerBit_mul_packing,
    standardDelone_packing⟩
+
+/-- QFT is a separable Fock space: finite-support occupations of a
+countable mode set, equinumerous with `ℕ`. Unrestricted occupations
+and a continuum of independent modes are not countable. -/
+theorem theory_of_everything_fock :
+    HasCountableInfinity FockNat ∧
+    HasCountableInfinity standardQFT.fock ∧
+    ¬ HasRealInfinity FockNat ∧
+    FockNat.vacuum.val 0 = 0 ∧
+    (FockNat.basis 0).val 0 = 1 ∧
+    Function.Injective FockNat.basis ∧
+    ¬ HasCountableInfinity (Nat → Nat) ∧
+    ¬ HasCountableInfinity (Occupations Continuum) :=
+  ⟨fockNat_has_countable_infinity,
+   qft_fock_countable standardQFT,
+   fockNat_not_real_infinity,
+   rfl,
+   FockNat.basis_at 0,
+   FockNat.basis_injective,
+   unrestricted_not_countable,
+   occupations_continuum_not_countable⟩
 
 end ToE

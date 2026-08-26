@@ -58,10 +58,26 @@ Supporting facts live in:
 - [`ToE/Dimension.lean`](ToE/Dimension.lean) — four copies of the continuum with
   \(\lvert\mathbb{R}^4\rvert = \lvert\mathbb{R}\rvert\), and the packing
   factor that identifies bulk density with holographic \(G\)
+- [`ToE/Fock.lean`](ToE/Fock.lean) — separable Fock space of finite-support
+  occupations, and the wrong kinematics of unrestricted or continuum modes
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
 dyadic identifications, which do not change the cardinality).
+
+## Fock space
+
+QFT after the split is a **separable Fock space** (`FockNat` /
+`QuantumFieldTheory.fock`): occupation-number states of a countable
+mode set, with only finitely many modes occupied. That space is
+equinumerous with `ℕ`. The vacuum is empty; one-particle states `basis n`
+inject into the Fock space, so it is infinite as well as countable.
+
+Unrestricted occupations `ℕ → ℕ` are **not** countable — they already
+contain a copy of the continuum (0-1 sequences). A continuum of
+independent modes is the wrong quantum kinematics: even the one-particle
+sector (`Occupations Continuum`) is not countable. Continuum labels
+belong to GR, not to matter.
 
 ## Geometry of the split
 
