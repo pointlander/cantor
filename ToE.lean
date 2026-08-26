@@ -11,6 +11,7 @@ import ToE.Geometry
 import ToE.Information
 import ToE.Dimension
 import ToE.Fock
+import ToE.Causal
 
 /-!
 # A Theory of Everything
@@ -234,5 +235,27 @@ theorem theory_of_everything_fock :
    FockNat.basis_injective,
    unrestricted_not_countable,
    occupations_continuum_not_countable⟩
+
+/-- The Delone embedding samples the carrier's causal order into the
+continuum. Screens that are spacelike on the carrier are spacelike in
+spacetime. There are no closed timelike curves. -/
+theorem theory_of_everything_causal_metric :
+    (∀ a b,
+      standardCausal.Rel a b ↔
+        standardCausalMetric.Precedes
+          (standardDelone.realize a) (standardDelone.realize b)) ∧
+    Function.Injective standardDelone.realize ∧
+    ¬ standardCausal.IsChain pairRealizedScreen.events ∧
+    ¬ standardCausalMetric.IsChain pairRealizedScreen.events ∧
+    (∀ p, ¬ standardCausalMetric.Precedes p p) ∧
+    standardCausalMetric.Spacelike
+      (standardDelone.realize (0 : Nat))
+      (standardDelone.realize (1 : Nat)) :=
+  ⟨standard_realize_iff,
+   standardDelone.realize_injective,
+   pairRealizedScreen_not_a_chain,
+   pairRealizedScreen_not_spacetime_chain,
+   standard_no_ctc,
+   standard_neighbours_spacelike⟩
 
 end ToE

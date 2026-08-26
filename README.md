@@ -60,6 +60,9 @@ Supporting facts live in:
   factor that identifies bulk density with holographic \(G\)
 - [`ToE/Fock.lean`](ToE/Fock.lean) — separable Fock space of finite-support
   occupations, and the wrong kinematics of unrestricted or continuum modes
+- [`ToE/Causal.lean`](ToE/Causal.lean) — causal–metric compatibility: the
+  Delone embedding samples the carrier order into spacetime, so screens
+  are spacelike in the geometry
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -163,6 +166,26 @@ screen.
 On the standard carrier `Nat`, \(a\) precedes \(b\) when \(a+2\le b\), so
 immediate neighbours are spacelike. The one-bit cell is the event `0`.
 The two-bit screen `{0,1}` has area `8` and is not a chain.
+
+## Causal geometry
+
+Cardinality and a metric do not yet make time. After the split the
+Delone embedding is a **causal embedding** (`CausalMetric` /
+`standardCausalMetric`): carrier event \(a\) precedes \(b\) if and only
+if the realized continuum points are related. Continuum points off the
+carrier are geometric labels, not extra instants — they do not insert a
+continuum of independent times between two events.
+
+Two spacetime points are **timelike** when comparable and **spacelike**
+when incomparable. A realized screen is an antichain in this spacetime
+order, not only on the carrier. Immediate neighbours `{0,1}` stay
+spacelike after embedding; `{0,1}` is not a timelike chain. The order is
+acyclic (no closed timelike curves). Locally finite intervals lift from
+the carrier, so the continuum still cannot smuggle an injective copy of
+\(\mathbb{N}\) between two related events.
+
+The Lorentzian content at this layer is that order, not a quadratic form
+on the Cantor space.
 
 ## Horizons
 
