@@ -13,8 +13,9 @@ A physical theory, in this formalization, is a kinematic carrier together
 with the infinity that carrier bears.
 
 * **Quantum field theory** is separable: its Fock space (constructed in
-  `ToE.Fock`) admits a countable basis of finite-support occupation-number
-  states, so it carries the infinity of the countable numbers.
+  `ToE.Fock`, paired in `ToE.Inner`) admits a countable orthonormal basis
+  of finite-support occupation-number states, so it carries the infinity
+  of the countable numbers.
 * **General relativity** is a continuum theory: spacetime is locally
   modelled on `ℝ⁴`, and `|ℝ⁴| = |ℝ|`, so it carries the infinity of the
   reals.
@@ -30,7 +31,7 @@ structure UnifiedTheory where
   countableInfinity : HasCountableInfinity Carrier
 
 /-- Quantum field theory: a countable mode set, as in a separable
-Fock space `⊕ₙ ℓ²(ℕ)ˢʸᵐⁿ`. -/
+algebraic Fock space of finite-support occupations. -/
 structure QuantumFieldTheory where
   Modes : Type
   countableInfinity : HasCountableInfinity Modes

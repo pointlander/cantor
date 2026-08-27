@@ -65,6 +65,8 @@ Supporting facts live in:
   are spacelike in the geometry
 - [`ToE/Growth.lean`](ToE/Growth.lean) — sequential growth: nested finite
   diamonds from a first instant, still countable after the split
+- [`ToE/Inner.lean`](ToE/Inner.lean) — algebraic inner product on Fock space,
+  orthonormal number states, and no continuum of orthonormal modes
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -83,6 +85,20 @@ contain a copy of the continuum (0-1 sequences). A continuum of
 independent modes is the wrong quantum kinematics: even the one-particle
 sector (`Occupations Continuum`) is not countable. Continuum labels
 belong to GR, not to matter.
+
+The algebraic Fock space carries a positive-definite pairing
+(`inner`) with values in `ℕ`:
+
+\[
+\langle f,g\rangle = \sum_k f(k)\,g(k).
+\]
+
+The sum is finite. The vacuum is the unique state of norm zero.
+One-particle states `basis n` are orthonormal:
+\(\langle e_n,e_m\rangle = \delta_{nm}\). A continuum of orthonormal
+modes would inject the reals into a countable space, which is
+forbidden. This is not completed \(\ell^2\); it is enough for a
+countable orthonormal basis of matter states.
 
 ## Geometry of the split
 

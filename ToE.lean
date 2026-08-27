@@ -13,6 +13,7 @@ import ToE.Dimension
 import ToE.Fock
 import ToE.Causal
 import ToE.Growth
+import ToE.Inner
 
 /-!
 # A Theory of Everything
@@ -287,5 +288,22 @@ theorem theory_of_everything_growth :
    epoch_succ,
    pair_screen_after_origin.2.1,
    pair_screen_after_origin.2.2⟩
+
+/-- Algebraic Fock space has a positive-definite inner product. The
+one-particle states are orthonormal, and a continuum of orthonormal
+modes is forbidden. -/
+theorem theory_of_everything_inner :
+    inner FockNat.vacuum FockNat.vacuum = 0 ∧
+    (∀ f, inner f f = 0 ↔ f = FockNat.vacuum) ∧
+    (∀ n, inner (FockNat.basis n) (FockNat.basis n) = 1) ∧
+    (∀ n m, n ≠ m → inner (FockNat.basis n) (FockNat.basis m) = 0) ∧
+    ¬ ∃ φ : Continuum → FockNat,
+        (∀ p, inner (φ p) (φ p) = 1) ∧
+        (∀ p q, p ≠ q → inner (φ p) (φ q) = 0) :=
+  ⟨inner_vacuum,
+   fun f => inner_self_eq_zero (f := f),
+   inner_basis_self,
+   fun _ _ h => inner_basis_off h,
+   no_continuum_orthonormal⟩
 
 end ToE
