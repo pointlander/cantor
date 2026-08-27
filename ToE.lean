@@ -12,6 +12,7 @@ import ToE.Information
 import ToE.Dimension
 import ToE.Fock
 import ToE.Causal
+import ToE.Growth
 
 /-!
 # A Theory of Everything
@@ -257,5 +258,34 @@ theorem theory_of_everything_causal_metric :
    pairRealizedScreen_not_spacetime_chain,
    standard_no_ctc,
    standard_neighbours_spacelike⟩
+
+/-- Cosmic time is a growing causal set. The origin is a first finite
+instant; later diamonds are nested, of size `n + 1`, and never carry
+the continuum. The two-bit screen appears after the origin. -/
+theorem theory_of_everything_growth :
+    (standardGrowth.region 0).size = 1 ∧
+    (standardGrowth.region 0).mem (0 : Nat) ∧
+    ¬ (standardGrowth.region 0).mem (1 : Nat) ∧
+    (∀ n : Time,
+      (standardGrowth.region n).subset (standardGrowth.region (n + 1))) ∧
+    (∀ n : Time, (standardGrowth.region n).size = n + 1) ∧
+    (∀ n : Time,
+      ¬ HasRealInfinity (Fin (standardGrowth.region n).size)) ∧
+    ¬ Infinite (Fin (standardGrowth.region 0).size) ∧
+    epoch 0 = .origin ∧
+    (∀ n : Time, epoch (n + 1) = .afterTime) ∧
+    (standardGrowth.region 1).mem (0 : Nat) ∧
+    (standardGrowth.region 1).mem (1 : Nat) :=
+  ⟨standardGrowth_origin,
+   standardGrowth_origin_event,
+   pair_screen_after_origin.1,
+   standardGrowth_nested,
+   standardGrowth_size,
+   standardGrowth_not_real,
+   standardGrowth_origin_not_infinite,
+   epoch_zero,
+   epoch_succ,
+   pair_screen_after_origin.2.1,
+   pair_screen_after_origin.2.2⟩
 
 end ToE

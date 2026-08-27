@@ -63,6 +63,8 @@ Supporting facts live in:
 - [`ToE/Causal.lean`](ToE/Causal.lean) — causal–metric compatibility: the
   Delone embedding samples the carrier order into spacetime, so screens
   are spacelike in the geometry
+- [`ToE/Growth.lean`](ToE/Growth.lean) — sequential growth: nested finite
+  diamonds from a first instant, still countable after the split
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -186,6 +188,23 @@ the carrier, so the continuum still cannot smuggle an injective copy of
 
 The Lorentzian content at this layer is that order, not a quadratic form
 on the Cantor space.
+
+## Sequential growth
+
+Cosmic time is a **growing causal set** (`SequentialGrowth` /
+`standardGrowth`), not only an epoch tag. At time `n` the realized
+region is the finite diamond `{0,…,n}` of size `n + 1`. The origin is a
+first instant `{0}`. Later diamonds are nested and still finite, so none
+of them carries the infinity of the reals. The past of a region is
+already inside it — there is no infinite continuum of instants before
+the origin.
+
+The split does not change kind as the universe grows: after time, QFT
+is still countable and GR still continuum. What grows is the sample of
+the countable carrier. The two-bit screen `{0,1}` is absent at the
+origin and present at time `1`.
+
+This is kinematic growth, not a probability on event births.
 
 ## Horizons
 
