@@ -67,6 +67,8 @@ Supporting facts live in:
   diamonds from a first instant, still countable after the split
 - [`ToE/Inner.lean`](ToE/Inner.lean) — algebraic inner product on Fock space,
   orthonormal number states, and no continuum of orthonormal modes
+- [`ToE/Modes.lean`](ToE/Modes.lean) — discrete mode sum on the growing
+  diamond, particle number, and the trans-Planckian cutoff
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -221,6 +223,23 @@ the countable carrier. The two-bit screen `{0,1}` is absent at the
 origin and present at time `1`.
 
 This is kinematic growth, not a probability on event births.
+
+## Discrete mode sum
+
+Quantum modes are carrier events (`modeAvailable` / `truncatedNumber`).
+At cosmic time `n` the available modes are `{0,…,n}`. Occupations sum
+over that finite set:
+
+\[
+N_n(f) = \sum_{k=0}^{n} f(k),
+\]
+
+not over the reals. Total particle number \(N(f) = \sum_k f(k)\) is
+finite; the vacuum has \(N = 0\) and `basis n` has \(N = 1\). A mode
+`k` is physical at time `n` iff \(k \le n\). Time zero is `{0}`: there
+are no trans-Planckian quantum labels at the origin. After the split,
+spacetime is already the continuum; the mode sum stays a finite sum of
+countable occupations.
 
 ## Horizons
 

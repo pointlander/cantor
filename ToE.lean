@@ -14,6 +14,7 @@ import ToE.Fock
 import ToE.Causal
 import ToE.Growth
 import ToE.Inner
+import ToE.Modes
 
 /-!
 # A Theory of Everything
@@ -305,5 +306,25 @@ theorem theory_of_everything_inner :
    inner_basis_self,
    fun _ _ h => inner_basis_off h,
    no_continuum_orthonormal⟩
+
+/-- Quantum modes are carrier events of the growing diamond. Particle
+number is a finite sum; at time `n` only modes `k ≤ n` are available.
+The origin has no trans-Planckian modes. The sum is never over the
+reals. -/
+theorem theory_of_everything_modes :
+    particleNumber FockNat.vacuum = 0 ∧
+    (∀ n, particleNumber (FockNat.basis n) = 1) ∧
+    (∀ n k, modeAvailable n k ↔ k ≤ n) ∧
+    modeAvailable 0 0 ∧
+    ¬ modeAvailable 0 1 ∧
+    (∀ n f, truncatedNumber n f = sumTo f.val (n + 1)) ∧
+    (∀ n, ¬ HasRealInfinity (Fin (n + 1))) :=
+  ⟨particleNumber_vacuum,
+   particleNumber_basis,
+   modeAvailable_iff_le,
+   modeAvailable_origin,
+   not_modeAvailable_of_gt (Nat.zero_lt_one),
+   truncatedNumber_eq,
+   truncated_modes_not_real⟩
 
 end ToE
