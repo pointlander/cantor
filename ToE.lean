@@ -15,6 +15,7 @@ import ToE.Causal
 import ToE.Growth
 import ToE.Inner
 import ToE.Modes
+import ToE.Interval
 
 /-!
 # A Theory of Everything
@@ -326,5 +327,28 @@ theorem theory_of_everything_modes :
    not_modeAvailable_of_gt (Nat.zero_lt_one),
    truncatedNumber_eq,
    truncated_modes_not_real⟩
+
+/-- A signed interval on the carrier: zero on the diagonal, negative
+timelike, positive spacelike with minimum \(G\). Immediate neighbours
+are spacelike at one Planck area. -/
+theorem theory_of_everything_interval :
+    intervalSq (0 : Nat) 0 = 0 ∧
+    0 < intervalSq (0 : Nat) 1 ∧
+    intervalSq (0 : Nat) 1 = standardDelone.newtonG ∧
+    intervalSq (0 : Nat) 2 < 0 ∧
+    standardCausalMetric.Spacelike
+      (standardDelone.realize (0 : Nat))
+      (standardDelone.realize (1 : Nat)) ∧
+    (∀ a b, standardCausal.Rel a b → intervalSq a b < 0) ∧
+    (∀ a b, a ≠ b →
+      ¬ standardCausal.Rel a b → ¬ standardCausal.Rel b a →
+        0 < intervalSq a b) :=
+  ⟨intervalSq_zero_zero,
+   intervalSq_zero_one_pos,
+   intervalSq_zero_one_G,
+   intervalSq_zero_two,
+   standard_neighbours_spacelike,
+   fun _ _ h => intervalSq_timelike h,
+   fun _ _ hne hab hba => intervalSq_spacelike_pos hne hab hba⟩
 
 end ToE

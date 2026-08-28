@@ -69,6 +69,8 @@ Supporting facts live in:
   orthonormal number states, and no continuum of orthonormal modes
 - [`ToE/Modes.lean`](ToE/Modes.lean) — discrete mode sum on the growing
   diamond, particle number, and the trans-Planckian cutoff
+- [`ToE/Interval.lean`](ToE/Interval.lean) — Lorentzian interval on the
+  carrier: timelike negative, spacelike positive, gap as the minimum
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -206,6 +208,25 @@ the carrier, so the continuum still cannot smuggle an injective copy of
 
 The Lorentzian content at this layer is that order, not a quadratic form
 on the Cantor space.
+
+## Lorentzian interval
+
+The GR counterpart of the Fock pairing is a **signed interval**
+(`intervalSq` / `standardInterval`) on carrier events, not a Minkowski
+product on `ℕ → Bool`:
+
+\[
+\tau^2(a,a)=0, \qquad
+\tau^2<0 \text{ if timelike}, \qquad
+\tau^2>0 \text{ if spacelike}.
+\]
+
+On the standard carrier, \(a\) precedes \(b\) when \(a+2\le b\). Then
+\(\tau^2(0,0)=0\), \(\tau^2(0,1)=+1=G\) (immediate neighbours, one
+Planck area), and \(\tau^2(0,2)<0\). A spacelike pair has
+\(\tau^2 \ge G\). The two-bit screen `{0,1}` is spacelike in this
+interval. The sign does not add a second infinity: it is a rational on
+the countable carrier.
 
 ## Sequential growth
 
