@@ -16,6 +16,7 @@ import ToE.Growth
 import ToE.Inner
 import ToE.Modes
 import ToE.Interval
+import ToE.Hamiltonian
 
 /-!
 # A Theory of Everything
@@ -350,5 +351,24 @@ theorem theory_of_everything_interval :
    standard_neighbours_spacelike,
    fun _ _ h => intervalSq_timelike h,
    fun _ _ hne hab hba => intervalSq_spacelike_pos hne hab hba⟩
+
+/-- Energy at time `n` is a finite sum over available modes. The
+vacuum has energy `0`; a trans-Planckian one-particle state has energy
+`0` until its mode is born. The spectrum at time `n` is finite. -/
+theorem theory_of_everything_hamiltonian :
+    energy 0 FockNat.vacuum = 0 ∧
+    energy 0 (FockNat.basis 0) = 1 ∧
+    energy 0 (FockNat.basis 1) = 0 ∧
+    (∀ n k, energy n (FockNat.basis k) =
+      if k ≤ n then k + 1 else 0) ∧
+    (∀ n, ¬ HasRealInfinity (Fin (n + 1))) ∧
+    (∀ n f, isBound f.val (n + 1) →
+      (energy n f = 0 ↔ f = FockNat.vacuum)) :=
+  ⟨energy_vacuum 0,
+   energy_origin_ground,
+   energy_origin_transPlanckian,
+   energy_basis,
+   energy_levels_not_real,
+   fun n f h => energy_eq_zero_of_supported (n := n) (f := f) h⟩
 
 end ToE

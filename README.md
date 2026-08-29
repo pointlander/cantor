@@ -71,6 +71,8 @@ Supporting facts live in:
   diamond, particle number, and the trans-Planckian cutoff
 - [`ToE/Interval.lean`](ToE/Interval.lean) — Lorentzian interval on the
   carrier: timelike negative, spacelike positive, gap as the minimum
+- [`ToE/Hamiltonian.lean`](ToE/Hamiltonian.lean) — cutoff Hamiltonian on the
+  grown diamond: energy is a finite sum over available modes
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -261,6 +263,24 @@ finite; the vacuum has \(N = 0\) and `basis n` has \(N = 1\). A mode
 are no trans-Planckian quantum labels at the origin. After the split,
 spacetime is already the continuum; the mode sum stays a finite sum of
 countable occupations.
+
+## Hamiltonian
+
+The first dynamical pairing (`energy` / `freq`) is a cutoff Hamiltonian
+on the grown diamond:
+
+\[
+\langle f, H_n f\rangle = \sum_{k=0}^{n} \omega(k)\,f(k), \qquad
+\omega(k)=k+1.
+\]
+
+The sum is over available modes only. The vacuum has energy `0`. A
+one-particle state in mode `k` has energy \(\omega(k)\) once that mode
+has appeared, and `0` while it is still trans-Planckian: at the origin,
+`basis 0` has energy `1` and `basis 1` has energy `0`. If a state is
+supported on `{0,…,n}` and has zero energy, it is the vacuum. The
+one-particle spectrum at time `n` is finite, not the continuum. This is
+a lattice quadratic form, not \(e^{-iHt}\).
 
 ## Horizons
 
