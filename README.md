@@ -73,6 +73,8 @@ Supporting facts live in:
   carrier: timelike negative, spacelike positive, gap as the minimum
 - [`ToE/Hamiltonian.lean`](ToE/Hamiltonian.lean) — cutoff Hamiltonian on the
   grown diamond: energy is a finite sum over available modes
+- [`ToE/Evolve.lean`](ToE/Evolve.lean) — isometric inclusion of supported
+  states along sequential growth, with the newborn mode empty
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -281,6 +283,17 @@ has appeared, and `0` while it is still trans-Planckian: at the origin,
 supported on `{0,…,n}` and has zero energy, it is the vacuum. The
 one-particle spectrum at time `n` is finite, not the continuum. This is
 a lattice quadratic form, not \(e^{-iHt}\).
+
+## Inclusion along growth
+
+A tick is not a unitary on a fixed Hilbert space: the physical subspace
+grows by one mode (`includeTick` / `supported`). A state supported on
+`{0,…,n}` is already a state on `{0,…,n+1}` with the newborn mode empty.
+Occupations are unchanged, so the inner product is preserved. Energy at
+time `n+1` agrees with energy at time `n` because \(f(n+1)=0\). The
+vacuum stays the vacuum. A one-particle state `basis k` with \(k\le n\)
+keeps energy \(k+1\). Growing the universe does not disturb existing
+quanta.
 
 ## Horizons
 

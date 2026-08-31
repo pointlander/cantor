@@ -17,6 +17,7 @@ import ToE.Inner
 import ToE.Modes
 import ToE.Interval
 import ToE.Hamiltonian
+import ToE.Evolve
 
 /-!
 # A Theory of Everything
@@ -370,5 +371,26 @@ theorem theory_of_everything_hamiltonian :
    energy_basis,
    energy_levels_not_real,
    fun n f h => energy_eq_zero_of_supported (n := n) (f := f) h⟩
+
+/-- A tick includes the time-`n` subspace into time `n+1`. Occupations
+are unchanged, the newborn mode is empty, and inner product and energy
+of existing quanta are preserved. -/
+theorem theory_of_everything_evolve :
+    (∀ n f, supported n f → includeTick n f = f) ∧
+    (∀ n f g, supported n f → supported n g →
+      inner (includeTick n f) (includeTick n g) = inner f g) ∧
+    (∀ n f, supported n f →
+      energy (n + 1) (includeTick n f) = energy n f) ∧
+    (∀ n, includeTick n FockNat.vacuum = FockNat.vacuum) ∧
+    (∀ n k, k ≤ n →
+      energy (n + 1) (FockNat.basis k) = energy n (FockNat.basis k)) ∧
+    (∀ n f, supported n f →
+      (includeTick n f).val (n + 1) = 0) :=
+  ⟨fun _ _ _ => rfl,
+   fun _ _ _ _ _ => rfl,
+   fun _ _ h => includeTick_energy h,
+   includeTick_vacuum,
+   fun _ _ h => includeTick_energy_basis h,
+   fun _ _ h => includeTick_newborn h⟩
 
 end ToE
