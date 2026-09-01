@@ -75,6 +75,8 @@ Supporting facts live in:
   grown diamond: energy is a finite sum over available modes
 - [`ToE/Evolve.lean`](ToE/Evolve.lean) — isometric inclusion of supported
   states along sequential growth, with the newborn mode empty
+- [`ToE/ProperTime.lean`](ToE/ProperTime.lean) — proper time of a finite
+  timelike chain, as a rational sum of hop durations
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -231,6 +233,20 @@ Planck area), and \(\tau^2(0,2)<0\). A spacelike pair has
 \(\tau^2 \ge G\). The two-bit screen `{0,1}` is spacelike in this
 interval. The sign does not add a second infinity: it is a rational on
 the countable carrier.
+
+## Proper time
+
+A clock is a finite timelike chain (`hopDuration` / `chainDuration`),
+not a continuum of instants. The duration of a hop \(a \prec b\) is
+\(-\tau^2(a,b)>0\). The proper time of a chain is the sum of those hops,
+a rational, with no square roots.
+
+On the standard carrier the chain `{0,2}` has duration `2`, `{2,4}` has
+duration `2`, and `{0,2,4}` has duration `4`. Immediate neighbours
+`{0,1}` are spacelike, so they are not a chain and have no proper time.
+A single hop has duration at least `2` in lattice units: a shortest
+operational time. Between two events there is still no injective copy of
+\(\mathbb{N}\).
 
 ## Sequential growth
 

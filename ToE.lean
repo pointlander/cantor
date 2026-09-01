@@ -18,6 +18,7 @@ import ToE.Modes
 import ToE.Interval
 import ToE.Hamiltonian
 import ToE.Evolve
+import ToE.ProperTime
 
 /-!
 # A Theory of Everything
@@ -392,5 +393,23 @@ theorem theory_of_everything_evolve :
    includeTick_vacuum,
    fun _ _ h => includeTick_energy_basis h,
    fun _ _ h => includeTick_newborn h⟩
+
+/-- Proper time is a finite sum of hop durations along a timelike
+chain. Neighbours are not a chain. Between two events there is no
+continuum of ticks. -/
+theorem theory_of_everything_proper_time :
+    standardCausal.IsChain hop02 ∧
+    0 < chainDuration hop02 ∧
+    ¬ standardCausal.IsChain pairRealizedScreen.events ∧
+    chainDuration hop024 = chainDuration hop02 + chainDuration hop24 ∧
+    (∀ a b, standardCausal.Rel a b → 0 < hopDuration a b) ∧
+    (∀ x y, ¬ Infinite
+      { z // standardCausal.Rel x z ∧ standardCausal.Rel z y }) :=
+  ⟨hop02_isChain,
+   hop02_duration_pos,
+   pairScreen_not_chain,
+   hop024_splits,
+   fun _ _ h => hopDuration_timelike h,
+   proper_time_no_continuum_ticks⟩
 
 end ToE
