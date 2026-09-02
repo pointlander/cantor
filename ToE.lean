@@ -19,6 +19,7 @@ import ToE.Interval
 import ToE.Hamiltonian
 import ToE.Evolve
 import ToE.ProperTime
+import ToE.Number
 
 /-!
 # A Theory of Everything
@@ -411,5 +412,30 @@ theorem theory_of_everything_proper_time :
    hop024_splits,
    fun _ _ h => hopDuration_timelike h,
    proper_time_no_continuum_ticks⟩
+
+/-- Occupation of mode `k` is the inner-product readout
+\(\langle e_k,f\rangle = f(k)\). Trans-Planckian readouts of a
+supported state vanish. Particle number is the sum of these
+observables. A continuum of independent number operators is
+forbidden. -/
+theorem theory_of_everything_number :
+    (∀ k, inner (FockNat.basis k) FockNat.vacuum = 0) ∧
+    (∀ n k, inner (FockNat.basis k) (FockNat.basis n) =
+      if k = n then 1 else 0) ∧
+    (∀ f k, inner (FockNat.basis k) f = f.val k) ∧
+    (∀ n f k, supported n f → n < k →
+      inner (FockNat.basis k) f = 0) ∧
+    (∀ n f, supported n f →
+      truncatedNumber n f =
+        sumTo (fun k => inner (FockNat.basis k) f) (n + 1)) ∧
+    ¬ ∃ φ : Continuum → FockNat,
+        Function.Injective φ ∧
+        (∀ p, inner (φ p) (φ p) = 1) :=
+  ⟨inner_basis_vacuum,
+   fun n k => inner_basis_basis k n,
+   fun f k => inner_basis_apply k f,
+   fun _ _ _ h hk => inner_transPlanckian h hk,
+   fun _ _ h => truncatedNumber_as_occupations h,
+   no_continuum_number_ops⟩
 
 end ToE

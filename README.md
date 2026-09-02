@@ -77,6 +77,8 @@ Supporting facts live in:
   states along sequential growth, with the newborn mode empty
 - [`ToE/ProperTime.lean`](ToE/ProperTime.lean) — proper time of a finite
   timelike chain, as a rational sum of hop durations
+- [`ToE/Number.lean`](ToE/Number.lean) — number operators as inner-product
+  readouts, available only after the mode is born
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -109,6 +111,19 @@ One-particle states `basis n` are orthonormal:
 modes would inject the reals into a countable space, which is
 forbidden. This is not completed \(\ell^2\); it is enough for a
 countable orthonormal basis of matter states.
+
+Occupation of mode `k` is the number-operator readout
+(`occupation` / `inner_basis_apply`):
+
+\[
+N_k(f) = \langle e_k, f\rangle = f(k).
+\]
+
+The vacuum has \(N_k = 0\); `basis n` has \(N_k = \delta_{kn}\). At time
+`n` a supported state has \(N_k = 0\) for every trans-Planckian `k`.
+Particle number on the grown diamond is \(\sum_{k=0}^{n} N_k(f)\); energy
+is \(\sum_{k=0}^{n} \omega(k)\,N_k(f)\). A continuum of independent
+number operators would inject the reals into the countable Fock space.
 
 ## Geometry of the split
 
