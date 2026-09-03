@@ -21,6 +21,7 @@ import ToE.Evolve
 import ToE.ProperTime
 import ToE.Number
 import ToE.Screen
+import ToE.HorizonReadout
 
 /-!
 # A Theory of Everything
@@ -462,5 +463,27 @@ theorem theory_of_everything_screen_readout :
    pairReadout_basis0_right,
    pairReadout_finite,
    pairReadout_not_chain⟩
+
+/-- Horizon entropy is the length of a joint occupation tuple. Early
+the tuple sits on `{2,3}`; late those two slots are radiation. The
+diamond is finite, so interior events are not extra continuum
+observables. -/
+theorem theory_of_everything_horizon_readout :
+    standardBlackHole.entropy = 2 ∧
+    horizonReadout FockNat.vacuum = (fun _ => (0 : Nat)) ∧
+    (horizonReadout (FockNat.basis 2) ⟨0, by decide⟩) = 1 ∧
+    (horizonReadout (FockNat.basis 2) ⟨1, by decide⟩) = 0 ∧
+    pageEarly.remaining.bits + pageEarly.radiation.bits = 2 ∧
+    pageLate.remaining.bits = 0 ∧
+    pageLate.radiation.bits = 2 ∧
+    ¬ HasRealInfinity (Fin standardDiamond.size) :=
+  ⟨standardBlackHole_entropy,
+   horizonReadout_vacuum,
+   horizonReadout_basis2_left,
+   horizonReadout_basis2_right,
+   pageEarly_slots,
+   pageLate_slots.1,
+   pageLate_slots.2,
+   diamond_readouts_finite⟩
 
 end ToE

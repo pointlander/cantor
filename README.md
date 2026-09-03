@@ -81,6 +81,8 @@ Supporting facts live in:
   readouts, available only after the mode is born
 - [`ToE/Screen.lean`](ToE/Screen.lean) — simultaneous number-operator
   readouts on a spacelike holographic screen
+- [`ToE/HorizonReadout.lean`](ToE/HorizonReadout.lean) — horizon occupations
+  along the Page curve: entropy is the length of the remaining readout
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -377,6 +379,14 @@ stages are remaining `{2,3}` with no radiation, then `{3}` with radiation
 \(8\to 4\to 0\) while radiation area rises \(0\to 4\to 8\). Information
 returns because it was countable and the diamond is finite. A remnant
 that stores a continuum of independent information is impossible.
+
+Those bits are joint occupations of the remaining antichain
+(`horizonReadout`). On `{2,3}` the vacuum reads `(0,0)` and `basis 2`
+reads `(1,0)`. After the first Page step the remaining readout is the
+one-bit screen `{3}`; the other slot is radiation at `{4}`. Late, both
+occupations sit on `{4,5}`. Interior events `{0,1}` are still carrier
+readouts, but the diamond is finite: they are not a continuum of extra
+number operators.
 
 ## Experimental predictions
 
