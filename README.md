@@ -79,6 +79,8 @@ Supporting facts live in:
   timelike chain, as a rational sum of hop durations
 - [`ToE/Number.lean`](ToE/Number.lean) — number operators as inner-product
   readouts, available only after the mode is born
+- [`ToE/Screen.lean`](ToE/Screen.lean) — simultaneous number-operator
+  readouts on a spacelike holographic screen
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -193,6 +195,18 @@ continuum of independent quantum data.
 On the standard realization, \(G = 1\) and a cell of area \(4\) holds
 exactly one bit. The SI value of \(G\) still needs a metre; the area law
 is already a theorem in lattice units.
+
+Those bits are simultaneous number-operator readouts
+(`screenReadout`). On a realized screen \(S\),
+
+\[
+R_S(f)_i = N_{s_i}(f) = \langle e_{s_i}, f\rangle.
+\]
+
+The events are an antichain, so the tuple is joint rather than ordered
+in time: `{0,1}` is spacelike and not a proper-time chain. The vacuum
+reads `(0,0)`; `basis 0` on that pair reads `(1,0)`. A finite-area
+screen has finitely many readouts, not the infinity of the reals.
 
 ## Causal order
 

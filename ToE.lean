@@ -20,6 +20,7 @@ import ToE.Hamiltonian
 import ToE.Evolve
 import ToE.ProperTime
 import ToE.Number
+import ToE.Screen
 
 /-!
 # A Theory of Everything
@@ -437,5 +438,29 @@ theorem theory_of_everything_number :
    fun _ _ _ h hk => inner_transPlanckian h hk,
    fun _ _ h => truncatedNumber_as_occupations h,
    no_continuum_number_ops⟩
+
+/-- A holographic screen is an antichain of number-operator readouts.
+The joint occupation tuple is simultaneous because the events are
+spacelike, finite because the area is finite, and not a timelike
+chain. -/
+theorem theory_of_everything_screen_readout :
+    (∀ i j : Fin pairRealizedScreen.screen.bits, i ≠ j →
+      ¬ standardCausal.Rel
+          (pairRealizedScreen.events i)
+          (pairRealizedScreen.events j)) ∧
+    screenReadout pairRealizedScreen FockNat.vacuum =
+      (fun _ => (0 : Nat)) ∧
+    (screenReadout pairRealizedScreen (FockNat.basis 0)
+      ⟨0, by decide⟩) = 1 ∧
+    (screenReadout pairRealizedScreen (FockNat.basis 0)
+      ⟨1, by decide⟩) = 0 ∧
+    ¬ HasRealInfinity (Fin pairRealizedScreen.screen.bits) ∧
+    ¬ standardCausal.IsChain pairRealizedScreen.events :=
+  ⟨pairReadout_spacelike,
+   pairReadout_vacuum,
+   pairReadout_basis0_left,
+   pairReadout_basis0_right,
+   pairReadout_finite,
+   pairReadout_not_chain⟩
 
 end ToE
