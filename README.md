@@ -83,6 +83,8 @@ Supporting facts live in:
   readouts on a spacelike holographic screen
 - [`ToE/HorizonReadout.lean`](ToE/HorizonReadout.lean) — horizon occupations
   along the Page curve: entropy is the length of the remaining readout
+- [`ToE/Local.lean`](ToE/Local.lean) — reconstruction from a finite diamond:
+  a supported state is its occupation tuple, and that tuple determines it
 
 The continuum is taken as the Cantor space `ℕ → Bool`. Classically this
 is equinumerous with `ℝ` (binary expansions, up to a countable set of
@@ -387,6 +389,23 @@ one-bit screen `{3}`; the other slot is radiation at `{4}`. Late, both
 occupations sit on `{4,5}`. Interior events `{0,1}` are still carrier
 readouts, but the diamond is finite: they are not a continuum of extra
 number operators.
+
+## Reconstruction
+
+A supported state at time `n` is the finite list of occupations on
+`{0,…,n}` (`diamondReadout` / `ofReadout`):
+
+\[
+R_n(f)_k = N_k(f) = \langle e_k, f\rangle = f(k), \qquad k\le n.
+\]
+
+Screen and horizon readouts are coordinates of that list. The list
+determines the state: two supported states with the same occupations
+are equal, and every finite tuple is a unique supported state.
+
+On the origin `{0}` the vacuum reads `(0)` and `basis 0` reads `(1)`.
+At time `1`, `basis 0` reads `(1,0)`. The readout type is finite, not
+the continuum.
 
 ## Experimental predictions
 

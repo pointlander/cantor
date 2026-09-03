@@ -22,6 +22,7 @@ import ToE.ProperTime
 import ToE.Number
 import ToE.Screen
 import ToE.HorizonReadout
+import ToE.Local
 
 /-!
 # A Theory of Everything
@@ -485,5 +486,26 @@ theorem theory_of_everything_horizon_readout :
    pageLate_slots.1,
    pageLate_slots.2,
    diamond_readouts_finite⟩
+
+/-- A supported state is the finite occupation tuple on the grown
+diamond. That tuple determines the state, and every tuple is some
+supported state. The origin reads a single slot; the tuple is never
+the continuum. -/
+theorem theory_of_everything_local :
+    (∀ n, diamondReadout n FockNat.vacuum = fun _ => (0 : Nat)) ∧
+    (diamondReadout 0 (FockNat.basis 0) ⟨0, by decide⟩) = 1 ∧
+    (diamondReadout 1 (FockNat.basis 0) ⟨1, by decide⟩) = 0 ∧
+    (∀ n r, diamondReadout n (ofReadout n r) = r) ∧
+    (∀ n f, supported n f → ofReadout n (diamondReadout n f) = f) ∧
+    (∀ n f g, supported n f → supported n g →
+      diamondReadout n f = diamondReadout n g → f = g) ∧
+    (∀ n, ¬ HasRealInfinity (Fin (n + 1))) :=
+  ⟨diamondReadout_vacuum,
+   originReadout_basis0,
+   diamondReadout_basis0_right,
+   diamondReadout_ofReadout,
+   fun _ _ h => ofReadout_diamondReadout h,
+   fun _ _ _ hf hg h => diamondReadout_injective hf hg h,
+   diamondReadout_not_real⟩
 
 end ToE
